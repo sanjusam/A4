@@ -55,5 +55,11 @@ public class TransactionTest {
 		Assert.assertNotNull(receipt);
 		Assert.assertTrue(receipt.contains(vehicleNum));
 	}
+	
+	@Test
+	public void testAdminOverideForMissingReceipt() throws Exception {
+		final float amt = transaction.getAdminOverRideForMissingReceipt();
+		Assert.assertEquals(100, amt, 0.00);
+	}
 
 }

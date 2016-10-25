@@ -3,7 +3,7 @@ package com.cs414.parking;
 import java.util.Calendar;
 
 public class Receipt {
-	private static int RECEIPT_NUM = 1;
+	ReceiptNumberGenerator receiptNumGenerator = new ReceiptNumberGenerator();
 
 	private Calendar entryTime;
 	private int receiptNum;
@@ -12,7 +12,7 @@ public class Receipt {
 	public Receipt(final String vechileNum) {
 		this.vechileNum = vechileNum;
 		this.entryTime = Calendar.getInstance();
-		receiptNum = RECEIPT_NUM++;
+		receiptNum = receiptNumGenerator.getReceiptNum();
 	}
 
 	public Calendar getEntryTime() {
@@ -27,10 +27,16 @@ public class Receipt {
 		return vechileNum;
 	}
 
-	@Override
-	public String toString() {
+	public String prettyPrint() {
 		return "Vehicle Number\t\t\t:\t" + vechileNum + "\nReceipt Num\t\t\t:\t" + Integer.toString(receiptNum)
 				+ "\nEntry Time\t\t\t:\t" + entryTime.getTime();
 
 	}
+	
+	@Override
+	public String toString() {
+		return receiptNum + "\t\t" + vechileNum + "\t\t" + entryTime.getTime();
+	}
+	
+	
 }

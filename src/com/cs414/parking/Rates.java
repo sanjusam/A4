@@ -2,22 +2,22 @@ package com.cs414.parking;
 
 public class Rates {
 
-	private int hourlyRate = 10;
-	private int receiptMissingRate = 100;
+	private float hourlyRate = 10;
+	private float receiptMissingRate = 100;
 
-	public int getHourlyRate() {
+	public float getHourlyRate() {
 		return hourlyRate;
 	}
 
-	public int getReceiptMissingRate() {
+	public float getReceiptMissingRate() {
 		return receiptMissingRate;
 	}
 
-	public void setHourlyRate(final int hourlyRate) {
+	public void setHourlyRate(final float hourlyRate) {
 		this.hourlyRate = hourlyRate;
 	}
 
-	public void setReceiptMissingRate(final int receiptMissingRate) {
+	public void setReceiptMissingRate(final float receiptMissingRate) {
 		this.receiptMissingRate = receiptMissingRate;
 	}
 }

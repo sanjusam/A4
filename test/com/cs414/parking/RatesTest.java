@@ -15,25 +15,25 @@ public class RatesTest {
 
 	@Test
 	public void testHourlyRate() throws Exception {
-		Assert.assertEquals(10, parkingRates.getHourlyRate());
+		Assert.assertEquals(10, parkingRates.getHourlyRate(), 0.000);
 	}
 	
 	@Test
 	public void testMissingSlipRate() throws Exception {
-		Assert.assertEquals(100, parkingRates.getReceiptMissingRate());
+		Assert.assertEquals(100, parkingRates.getReceiptMissingRate(), 0.000);
 	}
 	
 	@Test
 	public void testSetRatesMissingRates() throws Exception {
-		Assert.assertEquals(100, parkingRates.getReceiptMissingRate());
+		Assert.assertEquals(100, parkingRates.getReceiptMissingRate(), 0.000);
 		parkingRates.setReceiptMissingRate(500);
-		Assert.assertEquals(500, parkingRates.getReceiptMissingRate());
+		Assert.assertEquals(500, parkingRates.getReceiptMissingRate(), 0.000);
 	}
 	
 	@Test
 	public void testSetRatesHourlyRates() throws Exception {
-		Assert.assertEquals(10, parkingRates.getHourlyRate());
+		Assert.assertEquals(10, parkingRates.getHourlyRate(), 0.000);
 		parkingRates.setHourlyRate(300);
-		Assert.assertEquals(300, parkingRates.getHourlyRate());
+		Assert.assertEquals(300, parkingRates.getHourlyRate(), 0.000);
 	}
 }
