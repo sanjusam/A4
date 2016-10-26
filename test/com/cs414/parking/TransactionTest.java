@@ -61,5 +61,22 @@ public class TransactionTest {
 		final float amt = transaction.getAdminOverRideForMissingReceipt();
 		Assert.assertEquals(100, amt, 0.00);
 	}
-
+	
+	@Test
+	public void testGetYearlyRevenue() throws Exception {
+		transaction.generateRevenueNumbers();
+		Assert.assertNotNull(transaction.getYearlyIncome().get("2016"));
+	}
+	
+	@Test
+	public void testGetMonthlyRevenue() throws Exception {
+		transaction.generateRevenueNumbers();
+		Assert.assertNotNull(transaction.getMonthlyIncome());
+	}
+	
+	@Test
+	public void testGetDailyRevenue() throws Exception {
+		transaction.generateRevenueNumbers();
+		Assert.assertNotNull(transaction.getDailyIncome());
+	}
 }

@@ -1,9 +1,11 @@
 package com.cs414.parking;
 
+import java.io.File;
+import java.util.Map;
 
 public class Garage {
 	final String capacityFile= "GarageCapacity.txt";
-	private int CAPACITY = readCapacityFromConfiguration();;
+	private int CAPACITY = readCapacityFromConfiguration();
 	private int currentOccupancy;
 	final Transaction transaction = new Transaction();
 	float amt = GarageConstants.AMOUNT_NOT_CALCULATED;
@@ -33,7 +35,7 @@ public class Garage {
 			if(amt == GarageConstants.AMOUNT_NOT_CALCULATED) {
 				return GarageConstants.INVALID_RECEIPT_NUM;
 			}
-			return GarageConstants.AMNT_TO_PAY + amt;
+			return Float.toString(amt);
 		} catch (final NumberFormatException nfe) {
 			return GarageConstants.INVALID_RECEIPT_NUM;
 		}
@@ -53,16 +55,92 @@ public class Garage {
 	
 	public String handleMissingTicket() {
 		amt = transaction.getAdminOverRideForMissingReceipt();
-		return GarageConstants.AMNT_TO_PAY + amt;
+		return Float.toString(amt);
 	}
 	
+	public String handleFinancialReporting() {
+		final String reportFileName = System.getProperty("java.io.tmpdir") + File.separator + "GarageReports.txt";
+		final String deliminter = "\n=================================================================\n"; 
+		String reportDetails = "";
+		reportDetails += handleFinancialReportingDetails();
+		reportDetails += deliminter;
+		reportDetails += getMostUsedDay();
+		reportDetails += deliminter ;
+		reportDetails += getMostUsedMonth();
+		reportDetails += deliminter ;
+		reportDetails += "Occupancy :" +  currentOccupancy + "/" + CAPACITY;
+		
+		GarageUtils.writeToFileInResourceFolder(reportFileName, reportDetails);
+		
+		return "Output Generated to : " + reportFileName;
+	}
+	
+	public String handleFinancialReportingDetails() {
+		transaction.generateRevenueNumbers();
+		String revenueString = "\nYEARLY REVENUE FIGURES\n=================================\n" ;
+		Map <String, Integer> yearlyRevenue = transaction.getYearlyIncome();
+		for(final String year : yearlyRevenue.keySet()) {
+			revenueString += "\n" + year +"	-> $" + yearlyRevenue.get(year) + "\n"; 
+		}
+		
+		revenueString += "\nMONTHY REVENUE FIGURES\n=================================\n" ;
+		Map <String, Integer> monthly = transaction.getMonthlyIncome();
+		for(final String month : monthly.keySet()) {
+			revenueString += "\n" + month +"	-> $" + monthly.get(month) + "\n"; 
+		}
+		
+		revenueString += "\nWEEKLY REVENUE FIGURES\n=================================\n" ;
+		Map <String, Integer> weekly = transaction.getWeeklyIncome();
+		for(final String week : weekly.keySet()) {
+			revenueString += "\n" + week +"	-> $" + weekly.get(week) + "\n\n"; 
+		}
+		
+		revenueString += "\nDAILY REVENUE FIGURES\n=================================\n" ;
+		Map <String, Integer> daily = transaction.getDailyIncome();
+		for(final String day : daily.keySet()) {
+			revenueString += "\n" + day +"	-> $" + daily.get(day) + "\n\n";
+		}
+		
+		return revenueString;
+	}
 
+	public String getMostUsedMonth() {
+		transaction.generateRevenueNumbers();
+		String highestUsedMonth = "";
+		Integer usage  = 0;
+		Map <String, Integer> monthly = transaction.getMonthlyIncome();
+		for(final String month : monthly.keySet()) {
+			if(usage < monthly.get(month)) {
+				usage = monthly.get(month);
+				highestUsedMonth = month;
+			}
+		}
+		
+		return "The highest used month is  : " + highestUsedMonth + " Usage is : " + usage;
+	}
+	
+	public String getMostUsedDay() {
+		transaction.generateRevenueNumbers();
+		String highestUsedDay = "";
+		Integer usage  = 0;
+		Map <String, Integer> daily = transaction.getDailyIncome();
+		for(final String day : daily.keySet()) {
+			if(usage < daily.get(day)) {
+				usage = daily.get(day);
+				highestUsedDay = day;
+			}
+		}
+		
+		return "The highest used day is  : " + highestUsedDay + " Usage is : " + usage;
+	}
+	
 	public boolean isAvailable() {
 		return currentOccupancy < CAPACITY;
 	}
 	
 	public String updateParkingGarageSize(final int newSize) {
 		GarageUtils.updateSingleValueInResourceFolder(capacityFile, newSize);
+		CAPACITY = newSize;
 		return "Garage upgraded to " + newSize;
 	}
 	

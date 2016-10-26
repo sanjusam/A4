@@ -50,7 +50,18 @@ public class GarageUtils {
 		}
 	}
 	
-	private static String getFullPathToResourcesFolder() {
+	public static void writeToFileInResourceFolder(String fileName, String stringToWrite) {
+		try{
+			final PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
+			writer.write(stringToWrite);
+			writer.close();
+		} catch(final FileNotFoundException fne) {
+			fne.printStackTrace();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+	public static String getFullPathToResourcesFolder() {
 		final File resourceDir = new File(GarageUtils.class.getResource("/").getFile()).getParentFile();
 		return resourceDir.getAbsolutePath() + File.separator  + "resources" + File.separator ;
 	}

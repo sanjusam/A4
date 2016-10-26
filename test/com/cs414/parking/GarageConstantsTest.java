@@ -22,12 +22,7 @@ public class GarageConstantsTest {
 		Assert.assertEquals("Invalid Receipt - Re-enter", GarageConstants.INVALID_RECEIPT_NUM);
 	}
 	
-	@Test
-	public void testAmountToPay() throws Exception {
-		Assert.assertEquals("Amount to Pay : $ ", GarageConstants.AMNT_TO_PAY);
 		
-	}
-	
 	@Test
 	public void testAmountCoundNotCalculate() throws Exception {
 		Assert.assertEquals(-1, GarageConstants.AMOUNT_NOT_CALCULATED, 0.0);

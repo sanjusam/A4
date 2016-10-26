@@ -31,7 +31,7 @@ public class ExitParkingIntergrationTest {
 		Assert.assertEquals(numOfCarsInGarage, garage.getCurrentOccupancy());
 		
 		final String amtToPayMessage = garage.handleExit(Integer.toString(currentReceiptNum));
-		Assert.assertEquals(GarageConstants.AMNT_TO_PAY + "10.00" , amtToPayMessage);
+		Assert.assertEquals("10.0" , amtToPayMessage);
 		
 		//*Now pay the amount
 		garage.makePayment(rates.getHourlyRate());
@@ -48,7 +48,7 @@ public class ExitParkingIntergrationTest {
 	@Test
 	public void exitParkingCarMissingTicket() throws Exception {
 		final String amtToPayWithInvalidTicket = garage.handleMissingTicket();
-		Assert.assertEquals("Amount to Pay : $ 100.0", amtToPayWithInvalidTicket);
+		Assert.assertEquals("$ 100.0", amtToPayWithInvalidTicket);
 
 		//*Now pay the amount
 		garage.makePayment(rates.getReceiptMissingRate());

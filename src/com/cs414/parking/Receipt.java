@@ -14,6 +14,12 @@ public class Receipt {
 		this.entryTime = Calendar.getInstance();
 		receiptNum = receiptNumGenerator.getReceiptNum();
 	}
+	
+	public Receipt(final int receiptNum, final String vechileNum, final Calendar entryTime) {
+		this.receiptNum = receiptNum;
+		this.vechileNum =  vechileNum;
+		this.entryTime = entryTime;
+	}
 
 	public Calendar getEntryTime() {
 		return entryTime;
@@ -35,7 +41,7 @@ public class Receipt {
 	
 	@Override
 	public String toString() {
-		return receiptNum + "\t\t" + vechileNum + "\t\t" + entryTime.getTime();
+		return receiptNum + "\t\t" + vechileNum + "\t\t" + entryTime.getTime() + "\n";
 	}
 	
 	
