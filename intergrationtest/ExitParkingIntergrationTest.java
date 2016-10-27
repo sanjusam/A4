@@ -2,10 +2,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.cs414.parking.Garage;
-import com.cs414.parking.GarageConstants;
-import com.cs414.parking.GarageUtils;
-import com.cs414.parking.Rates;
+import com.cs414.parking.controller.GarageController;
+import com.cs414.parking.expert.Rates;
+import com.cs414.parking.utils.GarageConstants;
+import com.cs414.parking.utils.GarageUtils;
 
 
 public class ExitParkingIntergrationTest {
@@ -14,13 +14,13 @@ public class ExitParkingIntergrationTest {
 	private final Rates rates = new Rates();
 	int currentReceiptNum;
 	int currentlyOccupied;
-	private Garage garage;
+	private GarageController garage;
 	private final int numOfCarsInGarage = 1;
 	
 		
 	@Before
 	public void setup() throws Exception {
-		garage = new Garage();
+		garage = new GarageController();
 		currentReceiptNum = Integer.parseInt(GarageUtils.readOneLineInResourceFolder("ReceiptNumberTracking.txt")) + 1;
 		currentlyOccupied = garage.getCurrentOccupancy();
 		fillUpParking();

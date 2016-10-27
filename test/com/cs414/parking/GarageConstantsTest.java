@@ -3,6 +3,8 @@ package com.cs414.parking;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.cs414.parking.utils.GarageConstants;
+
 
 public class GarageConstantsTest {
 

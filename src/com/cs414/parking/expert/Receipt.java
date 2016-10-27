@@ -1,6 +1,8 @@
-package com.cs414.parking;
+package com.cs414.parking.expert;
 
 import java.util.Calendar;
+
+import com.cs414.parking.utils.ReceiptNumberGenerator;
 
 public class Receipt {
 	ReceiptNumberGenerator receiptNumGenerator = new ReceiptNumberGenerator();

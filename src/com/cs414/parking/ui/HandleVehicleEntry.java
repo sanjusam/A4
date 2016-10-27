@@ -16,15 +16,15 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import com.cs414.parking.Garage;
-import com.cs414.parking.GarageConstants;
+import com.cs414.parking.controller.GarageController;
+import com.cs414.parking.utils.GarageConstants;
 
 public class HandleVehicleEntry implements ActionListener {
 
 	JLabel currentlyOccupied;
 	JLabel enterCarNum;
 	JTextField carNumReceiver; 
-	final Garage garage = new Garage();
+	final GarageController garage = new GarageController();
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {

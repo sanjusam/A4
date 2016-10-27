@@ -4,6 +4,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.cs414.parking.expert.Rates;
+
 public class RatesTest {
 	
 	private Rates parkingRates;

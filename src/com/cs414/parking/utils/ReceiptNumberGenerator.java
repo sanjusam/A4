@@ -1,4 +1,4 @@
-package com.cs414.parking;
+package com.cs414.parking.utils;
 
 public class ReceiptNumberGenerator {
 	

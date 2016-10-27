@@ -1,4 +1,4 @@
-package com.cs414.parking;
+package com.cs414.parking.expert;
 
 import java.util.Calendar;
 
@@ -30,6 +30,9 @@ public class PaymentGenerator {
 			return rates.getReceiptMissingRate();
 		}
 		final float hourlyRate = rates.getHourlyRate();
+		if(numHours == 0 ) {
+			return hourlyRate;  
+		}
 		return numHours * hourlyRate;
 	}
 }

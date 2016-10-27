@@ -4,15 +4,18 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.cs414.parking.expert.Receipt;
+import com.cs414.parking.expert.TransactionExpert;
+
 
 public class TransactionTest {
 	
-	private Transaction transaction ;
+	private TransactionExpert transaction ;
 	private final String vehicleNum = "abc";
 	
 	@Before
 	public void setup() throws Exception {
-		transaction = new Transaction();
+		transaction = new TransactionExpert();
 	}
 
 	@Test

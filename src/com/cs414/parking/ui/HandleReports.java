@@ -15,14 +15,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import com.cs414.parking.Garage;
+import com.cs414.parking.controller.GarageController;
 
 public class HandleReports implements ActionListener {
 
 	JButton generateReports;
 	JLabel reportsLabel;
 	
-	final Garage garage = new Garage();
+	final GarageController garage = new GarageController();
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {

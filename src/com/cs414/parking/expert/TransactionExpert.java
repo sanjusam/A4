@@ -1,4 +1,4 @@
-package com.cs414.parking;
+package com.cs414.parking.expert;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -14,7 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Transaction {
+import com.cs414.parking.utils.GarageConstants;
+import com.cs414.parking.utils.GarageUtils;
+
+public class TransactionExpert {
 	final String transactionFile = "ParkingDetails.txt";
 	final String paidTransactionFile = "PaidParkingDetails.txt";
 	final List<Receipt> receipts = new ArrayList<>();
@@ -24,6 +27,8 @@ public class Transaction {
 	final Map<String, Integer> perDayIncome = new HashMap<>();
 	final Map<String, Integer> monthlyIncome = new HashMap<>();
 	final Map<String, Integer> weeklyIncome = new HashMap<>();
+	private String updatedTransactionRecords = "DEFAULT_UMATCHED";
+	private String reciptToRemove = "DEFAULT_UMATCHED";
 
 	public String createTransaction(final String vechicleNum) {
 		final Receipt receipt = new Receipt(vechicleNum);
@@ -36,15 +41,20 @@ public class Transaction {
 		for(final Receipt recipt : createReceiptsFromSaveTransactions()) {
 			if(recipt.getReceiptNum() == receiptNum) {
 				float amtToPay = paymentGenerator.getTotalAmt(recipt.getEntryTime());
-				String toPrint = recipt.toString().trim() + "\t\t" + Calendar.getInstance().getTime() +"\t\t" + amtToPay + "\n";
-				updatedPaymentransactions(toPrint);
-				removeTransactionFromFile(Integer.toString(recipt.getReceiptNum()));
+				updatedTransactionRecords = recipt.toString().trim() + "\t\t" + Calendar.getInstance().getTime() +"\t\t" + amtToPay + "\n";
+				reciptToRemove = Integer.toString(recipt.getReceiptNum());
 				return amtToPay;
 			}
 		}
 		return GarageConstants.AMOUNT_NOT_CALCULATED;
 	}
 	
+	public void updateTransactionRecords() {
+		updatedPaymentransactions(updatedTransactionRecords);
+		updatedTransactionRecords = "DEFAULT_UMATCHED";
+		removeTransactionFromFile(reciptToRemove);
+		reciptToRemove= "DEFAULT_UMATCHED";
+	}
 	
 	public float getAdminOverRideForMissingReceipt () {
 		return paymentGenerator.getTotalAmt();
@@ -190,6 +200,10 @@ public class Transaction {
 		}catch (final Exception e) {
 			
 		}
+	}
+	
+	public int getNumberOfVehicles() {
+		return GarageUtils.getLineCountInFile(transactionFile, true);
 	}
 	
 	private void persistTransactionToFile(final Receipt receipt) {

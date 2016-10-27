@@ -7,6 +7,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.cs414.parking.expert.Receipt;
+
 public class ReceiptTest {
 	
 	private final String vechicleNum = "abc";

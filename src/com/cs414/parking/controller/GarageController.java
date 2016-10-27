@@ -1,17 +1,27 @@
-package com.cs414.parking;
+package com.cs414.parking.controller;
 
 import java.io.File;
 import java.util.Map;
 
-public class Garage {
+import com.cs414.parking.expert.TransactionExpert;
+import com.cs414.parking.utils.CardValidator;
+import com.cs414.parking.utils.GarageConstants;
+import com.cs414.parking.utils.GarageUtils;
+
+public class GarageController {
 	final String capacityFile= "GarageCapacity.txt";
 	private int CAPACITY = readCapacityFromConfiguration();
 	private int currentOccupancy;
-	final Transaction transaction = new Transaction();
+	TransactionExpert transaction;
 	float amt = GarageConstants.AMOUNT_NOT_CALCULATED;
 
 	public int getCapacity() {
 		return CAPACITY;
+	}
+	
+	public GarageController() {
+		transaction = new TransactionExpert();
+		currentOccupancy = transaction.getNumberOfVehicles();
 	}
 
 	public int getCurrentOccupancy() {
@@ -45,6 +55,7 @@ public class Garage {
 		if ((amt != GarageConstants.AMOUNT_NOT_CALCULATED) && (amout == amt))  {
 			if(currentOccupancy > 0) { 
 				currentOccupancy --;
+				transaction.updateTransactionRecords();
 			}
 			amt = GarageConstants.AMOUNT_NOT_CALCULATED;
 			return GarageConstants.EXIT_GARAGE_SUCCESSFULY;

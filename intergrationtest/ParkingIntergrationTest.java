@@ -3,21 +3,21 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.cs414.parking.Garage;
-import com.cs414.parking.GarageConstants;
-import com.cs414.parking.GarageUtils;
+import com.cs414.parking.controller.GarageController;
+import com.cs414.parking.utils.GarageConstants;
+import com.cs414.parking.utils.GarageUtils;
 
 public class ParkingIntergrationTest {
 	
 	private final String vechicleNum  = "XAE-121";
 	int currentReceiptNum;
 	int currentlyOccupied;
-	private Garage garage;
+	private GarageController garage;
 	
 		
 	@Before
 	public void setup() throws Exception {
-		garage = new Garage();
+		garage = new GarageController();
 		currentReceiptNum = Integer.parseInt(GarageUtils.readOneLineInResourceFolder("ReceiptNumberTracking.txt")) + 1;
 		currentlyOccupied = garage.getCurrentOccupancy();
 	}

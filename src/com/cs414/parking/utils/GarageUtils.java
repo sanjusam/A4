@@ -1,13 +1,15 @@
-package com.cs414.parking;
+package com.cs414.parking.utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.io.PrintWriter;
 
 public class GarageUtils {
@@ -61,6 +63,29 @@ public class GarageUtils {
 			ioe.printStackTrace();
 		}
 	}
+	public static int getLineCountInFile(final String fileName, final boolean fileInResource) {
+		int cntInFile = 0;
+		try {
+			File file;
+			if(fileInResource) {
+				file =new File(getFullPathToResourcesFolder() + File.separator + fileName);
+			} else {
+				file =new File(fileName);
+			}
+			if(file.exists()) {
+				final FileReader fileReader = new FileReader(file);
+				final LineNumberReader lineNumberReader = new LineNumberReader(fileReader);
+				while (lineNumberReader.readLine() != null){
+					cntInFile++;
+				}
+				lineNumberReader.close();
+			}
+		} catch(final Exception e) {
+			
+		}
+		return cntInFile ;
+	}
+	
 	public static String getFullPathToResourcesFolder() {
 		final File resourceDir = new File(GarageUtils.class.getResource("/").getFile()).getParentFile();
 		return resourceDir.getAbsolutePath() + File.separator  + "resources" + File.separator ;

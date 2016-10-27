@@ -16,13 +16,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import com.cs414.parking.Garage;
+import com.cs414.parking.controller.GarageController;
 
 public class HandleGarageSize implements ActionListener {
 
 	JLabel enterSize;
 	JTextField sizeReceiver; 
-	final Garage garage = new Garage();
+	final GarageController garage = new GarageController();
 	
 	
 	@Override

@@ -16,8 +16,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import com.cs414.parking.Garage;
-import com.cs414.parking.GarageConstants;
+import com.cs414.parking.controller.GarageController;
+import com.cs414.parking.utils.CardValidator;
+import com.cs414.parking.utils.GarageConstants;
 
 public class HandleVehicleExit implements ActionListener {
 
@@ -26,7 +27,7 @@ public class HandleVehicleExit implements ActionListener {
 	JButton enterButton;
 	JButton missingLostReceipt;
 	
-	final Garage garage = new Garage();
+	final GarageController garage = new GarageController();
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -51,9 +52,16 @@ public class HandleVehicleExit implements ActionListener {
 		}
 		JOptionPane.showMessageDialog(frame, amtHeader + respFromSystem);
 		
+		int attempt = 0;
+		final int maxCardAttempt = 3;
+		boolean payByCash = false;
 		JFrame crediCardDetails = new JFrame("Payment");
 		String paymentDetails = "";
 		while (true) {
+			if(++attempt > maxCardAttempt) {
+				payByCash = true;
+				break;
+			}
 			String creditCard = JOptionPane.showInputDialog(crediCardDetails, "Enter the card number");
 			if(creditCard == null || creditCard.isEmpty()) {
 				JOptionPane.showMessageDialog(frame, "Payment Details empty - Try Again!!");
@@ -61,6 +69,10 @@ public class HandleVehicleExit implements ActionListener {
 			} else {
 				try {
 					Integer.parseInt(creditCard);
+					if(!CardValidator.validate(creditCard)) {
+						JOptionPane.showMessageDialog(frame, "Invalid Card - Try Again!!");
+						continue;
+					}
 				} catch (final NumberFormatException nfe) {
 					JOptionPane.showMessageDialog(frame, "Bad Payment Details - Try Again!!");
 					continue;
@@ -69,7 +81,11 @@ public class HandleVehicleExit implements ActionListener {
 				break;
 			}
 		}
-		JOptionPane.showMessageDialog(frame, paymentDetails);
+		if(payByCash) {
+			JOptionPane.showMessageDialog(frame, "Credit card attempt failed - Pay by cash at the counter.");
+		} else {
+			JOptionPane.showMessageDialog(frame, paymentDetails);
+		}
 	}
 
 	public static void main(String[] args) {
@@ -111,7 +127,7 @@ public class HandleVehicleExit implements ActionListener {
 		receiptNumReceiver = new JTextField(20);
 		
 		JPanel pane = new JPanel(new GridLayout(0, 2));
-	    pane.add(enterReceiptNum);
+		pane.add(enterReceiptNum);
 	    pane.add(receiptNumReceiver);
 	    pane.add(missingLostReceipt);
 	    pane.add(enterButton);

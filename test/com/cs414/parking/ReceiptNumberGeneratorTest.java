@@ -4,6 +4,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.cs414.parking.utils.GarageUtils;
+import com.cs414.parking.utils.ReceiptNumberGenerator;
+
 
 public class ReceiptNumberGeneratorTest {
 	
