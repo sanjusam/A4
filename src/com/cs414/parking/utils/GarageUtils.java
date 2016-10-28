@@ -53,6 +53,11 @@ public class GarageUtils {
 	}
 	
 	public static void writeToFileInResourceFolder(String fileName, String stringToWrite) {
+		String fullPathToFile = getFullPathToResourcesFolder() + fileName;
+		writeFile(fullPathToFile, stringToWrite);
+	}
+	
+	public static void writeFile(String fileName, String stringToWrite) {
 		try{
 			final PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
 			writer.write(stringToWrite);
@@ -63,6 +68,7 @@ public class GarageUtils {
 			ioe.printStackTrace();
 		}
 	}
+	
 	public static int getLineCountInFile(final String fileName, final boolean fileInResource) {
 		int cntInFile = 0;
 		try {

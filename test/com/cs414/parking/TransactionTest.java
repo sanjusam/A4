@@ -1,21 +1,25 @@
 package com.cs414.parking;
 
+import java.io.File;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.cs414.parking.expert.Receipt;
-import com.cs414.parking.expert.TransactionExpert;
+import com.cs414.parking.expert.Transaction;
+import com.cs414.parking.utils.GarageConstants;
+import com.cs414.parking.utils.GarageUtils;
 
 
 public class TransactionTest {
 	
-	private TransactionExpert transaction ;
+	private Transaction transaction ;
 	private final String vehicleNum = "abc";
 	
 	@Before
 	public void setup() throws Exception {
-		transaction = new TransactionExpert();
+		transaction = new Transaction();
 	}
 
 	@Test
@@ -82,4 +86,57 @@ public class TransactionTest {
 		transaction.generateRevenueNumbers();
 		Assert.assertNotNull(transaction.getDailyIncome());
 	}
+	
+	@Test
+	public void testGetReceiptDetails() throws Exception {
+		updateTestFile();
+		transaction.setTransactionFile("ParkingDetailsForTest.txt");
+		float amnt = transaction.getReceiptDetails(1001);
+		Assert.assertTrue(amnt > 10.0);
+	}
+	
+	@Test
+	public void testGetReceiptDetailsForNonExistingReceipt() throws Exception {
+		updateTestFile();
+		transaction.setTransactionFile("ParkingDetailsForTest.txt");
+		float amnt = transaction.getReceiptDetails(787878);
+		Assert.assertEquals(amnt, GarageConstants.AMOUNT_NOT_CALCULATED, 0.0);
+	}
+	
+	@Test
+	public void testUpdatePayment() throws Exception {
+		updateTestFile();
+		final String transactioFileForTest = "ParkingDetailsForTest.txt";
+		final String paidTransactioFileForTest = "PaidParkingDetailsForTest.txt";
+		final File paidTransaction = new File(GarageUtils.getFullPathToResourcesFolder() + paidTransactioFileForTest);
+		if(paidTransaction.exists()) {
+			paidTransaction.delete();
+		}
+		
+		transaction.setTransactionFile(transactioFileForTest);
+		transaction.setPaidTransactionFile(paidTransactioFileForTest);
+		
+		Assert.assertEquals(2, GarageUtils.getLineCountInFile(transactioFileForTest, true));
+		
+		transaction.getReceiptDetails(1001);
+		transaction.updateTransactionRecords();
+		Assert.assertEquals(1, GarageUtils.getLineCountInFile(transactioFileForTest, true));
+		Assert.assertEquals(1, GarageUtils.getLineCountInFile(paidTransactioFileForTest, true));
+	
+	}
+	
+	@Test
+	public void testGetNumVechicles() throws Exception {
+		updateTestFile();
+		final String transactioFileForTest = "ParkingDetailsForTest.txt";
+		transaction.setTransactionFile(transactioFileForTest);
+		Assert.assertEquals(2, transaction.getNumberOfVehicles());
+	}
+	
+	private void updateTestFile() {
+		final String textToWrite = "1001		ABC-123		Wed Oct 26 19:27:34 MDT 2016" + "\n" +
+									"1002		ABC-234		Wed Oct 26 19:27:34 MDT 2016" + "\n";
+		GarageUtils.writeToFileInResourceFolder("ParkingDetailsForTest.txt", textToWrite);
+	}
+
 }

@@ -20,8 +20,7 @@ import com.cs414.parking.controller.GarageController;
 public class HandleReports implements ActionListener {
 
 	JButton generateReports;
-	JLabel reportsLabel;
-	
+		
 	final GarageController garage = new GarageController();
 	
 	@Override
@@ -29,7 +28,7 @@ public class HandleReports implements ActionListener {
 		JFrame frame = new JFrame("Information");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JOptionPane.showMessageDialog(frame, garage.handleFinancialReporting());
-		reportsLabel.setText(garage.handleFinancialReporting());
+		
 	}
 	
 	public static void main(String[] args) {
@@ -57,14 +56,12 @@ public class HandleReports implements ActionListener {
 		Font enterCarNumFont = generateReports.getFont();
 		Font boldFont = new Font(enterCarNumFont.getFontName(), Font.BOLD, 15);
 		generateReports.setFont(boldFont);
-		reportsLabel = new JLabel("", SwingConstants.LEFT);
-		
+				
 		JPanel pane = new JPanel(new GridLayout(0, 2));
 		generateReports.addActionListener(this);
 		
 		pane.add(generateReports);
-		pane.add(reportsLabel);
-	    	    
+			    
 	    pane.setBorder(BorderFactory.createEmptyBorder(
 	    		30, //top
 	            30, //left

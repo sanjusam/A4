@@ -38,4 +38,5 @@ public class RatesTest {
 		parkingRates.setHourlyRate(300);
 		Assert.assertEquals(300, parkingRates.getHourlyRate(), 0.000);
 	}
+
 }

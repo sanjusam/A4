@@ -17,16 +17,16 @@ import java.util.Map;
 import com.cs414.parking.utils.GarageConstants;
 import com.cs414.parking.utils.GarageUtils;
 
-public class TransactionExpert {
-	final String transactionFile = "ParkingDetails.txt";
-	final String paidTransactionFile = "PaidParkingDetails.txt";
-	final List<Receipt> receipts = new ArrayList<>();
-	final PaymentGenerator paymentGenerator = new PaymentGenerator();
-	Receipt reciptToUpdate = null;
-	final Map<String, Integer> perYearlIncome = new HashMap<>();
-	final Map<String, Integer> perDayIncome = new HashMap<>();
-	final Map<String, Integer> monthlyIncome = new HashMap<>();
-	final Map<String, Integer> weeklyIncome = new HashMap<>();
+public class Transaction {
+	private String transactionFile = "ParkingDetails.txt";
+	private String paidTransactionFile = "PaidParkingDetails.txt";
+	private final List<Receipt> receipts = new ArrayList<>();
+	private final PaymentGenerator paymentGenerator = new PaymentGenerator();
+	private Receipt reciptToUpdate = null;
+	private final Map<String, Integer> perYearlIncome = new HashMap<>();
+	private final Map<String, Integer> perDayIncome = new HashMap<>();
+	private final Map<String, Integer> monthlyIncome = new HashMap<>();
+	private final Map<String, Integer> weeklyIncome = new HashMap<>();
 	private String updatedTransactionRecords = "DEFAULT_UMATCHED";
 	private String reciptToRemove = "DEFAULT_UMATCHED";
 
@@ -50,10 +50,15 @@ public class TransactionExpert {
 	}
 	
 	public void updateTransactionRecords() {
-		updatedPaymentransactions(updatedTransactionRecords);
-		updatedTransactionRecords = "DEFAULT_UMATCHED";
-		removeTransactionFromFile(reciptToRemove);
-		reciptToRemove= "DEFAULT_UMATCHED";
+		if(!updatedTransactionRecords.equals("DEFAULT_UMATCHED")) {
+			updatedPaymentransactions(updatedTransactionRecords);
+			updatedTransactionRecords = "DEFAULT_UMATCHED";
+		}
+		
+		if(!reciptToRemove.equals("DEFAULT_UMATCHED")) {
+			removeTransactionFromFile(reciptToRemove);
+			reciptToRemove= "DEFAULT_UMATCHED";
+		}
 	}
 	
 	public float getAdminOverRideForMissingReceipt () {
@@ -212,6 +217,14 @@ public class TransactionExpert {
 	
 	private void updatedPaymentransactions(final String toPrint) {
 		GarageUtils.appendToFileInResourceFolder(paidTransactionFile, toPrint);
+	}
+	
+	public void setTransactionFile(final String transactionFile) {
+		this.transactionFile = transactionFile;
+	}
+	
+	public void setPaidTransactionFile(final String paidTransactionFile) {
+		this.paidTransactionFile = paidTransactionFile;
 	}
 	
 	

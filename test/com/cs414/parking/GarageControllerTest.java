@@ -7,23 +7,32 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.cs414.parking.controller.GarageController;
+import com.cs414.parking.expert.Transaction;
 import com.cs414.parking.utils.GarageConstants;
 import com.cs414.parking.utils.GarageUtils;
 
 
-public class GarageTest {
+public class GarageControllerTest {
 	
 	private GarageController parkingGarage;
 	private final String vehicleNum = "112-RYA";
 	private final String capacityConfigurationFile = "GarageCapacity.txt";
 	private int originalCapacity;
 	private int capacity ;
+	private Transaction transactionMock;
+	final String transactioFileForTest = "ParkingDetailsForTest.txt";
+	final String paidTransactioFileForTest = "PaidParkingDetailsForTest.txt";
+	
 
 	@Before
 	public void setup() throws Exception {
 		parkingGarage = new GarageController();
 		capacity = parkingGarage.getCapacity();
 		originalCapacity = parkingGarage.readCapacityFromConfiguration();
+		transactionMock = new Transaction();
+		transactionMock.setTransactionFile(transactioFileForTest);
+		transactionMock.setPaidTransactionFile(paidTransactioFileForTest);
+		updateTestFile();
 	}
 	
 	@After
@@ -98,5 +107,46 @@ public class GarageTest {
 		
 		//*Then
 		Assert.assertEquals(newCapacity, capacity);
+	}
+	
+	@Test
+	public void testGetCapacity() throws Exception {
+		parkingGarage.intejectTransactionForTest(transactionMock);
+		Assert.assertEquals(2, parkingGarage.getCurrentOccupancy());
+	}
+	
+	@Test
+	public void testhandleMissingTicket() throws Exception {
+		Assert.assertEquals("100.0", parkingGarage.handleMissingTicket());
+		
+	}
+	
+	@Test
+	public void testHandleMakePaymentError() throws Exception {
+		Assert.assertEquals("Not Successful yet!", parkingGarage.makePayment(100));
+	}
+	
+	@Test
+	public void testHandleMakePayment() throws Exception {
+		parkingGarage.injectPaymentDueForTest(80);
+				
+		Assert.assertEquals("You exit the Garage, Have a good Day", 
+				parkingGarage.makePayment(80));
+	}
+	
+	@Test
+	public void testGetMostUsedDay() throws Exception {
+		parkingGarage.intejectTransactionForTest(transactionMock);
+		
+		Assert.assertNotNull("2016 Oct 22 Usage is : 230", parkingGarage.getMostUsedDay());
+	}
+
+	private void updateTestFile() {
+		final String textToWrite = "1001		ABC-123		Wed Oct 26 19:27:34 MDT 2016" + "\n" +
+									"1002		ABC-234		Wed Oct 26 19:27:34 MDT 2016" + "\n";
+		GarageUtils.writeToFileInResourceFolder(transactioFileForTest, textToWrite);
+		final String amtTxt =  "1001		ABC-123		Wed Oct 22 19:27:34 MDT 2016		Thu Oct 27 18:23:07 MDT 2016		230.0\n" +
+								"1002		ABC-345		Wed Oct 24 19:27:34 MDT 2016		Thu Oct 27 18:23:07 MDT 2016		10.0\n";
+		GarageUtils.writeToFileInResourceFolder(paidTransactioFileForTest, amtTxt);
 	}
 }

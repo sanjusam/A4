@@ -3,24 +3,24 @@ package com.cs414.parking.controller;
 import java.io.File;
 import java.util.Map;
 
-import com.cs414.parking.expert.TransactionExpert;
+import com.cs414.parking.expert.Transaction;
 import com.cs414.parking.utils.CardValidator;
 import com.cs414.parking.utils.GarageConstants;
 import com.cs414.parking.utils.GarageUtils;
 
 public class GarageController {
-	final String capacityFile= "GarageCapacity.txt";
+	private final String capacityFile= "GarageCapacity.txt";
 	private int CAPACITY = readCapacityFromConfiguration();
 	private int currentOccupancy;
-	TransactionExpert transaction;
-	float amt = GarageConstants.AMOUNT_NOT_CALCULATED;
+	private Transaction transaction;
+	private float amt = GarageConstants.AMOUNT_NOT_CALCULATED;
 
 	public int getCapacity() {
 		return CAPACITY;
 	}
 	
 	public GarageController() {
-		transaction = new TransactionExpert();
+		transaction = new Transaction();
 		currentOccupancy = transaction.getNumberOfVehicles();
 	}
 
@@ -81,12 +81,12 @@ public class GarageController {
 		reportDetails += deliminter ;
 		reportDetails += "Occupancy :" +  currentOccupancy + "/" + CAPACITY;
 		
-		GarageUtils.writeToFileInResourceFolder(reportFileName, reportDetails);
+		GarageUtils.writeFile(reportFileName, reportDetails);
 		
 		return "Output Generated to : " + reportFileName;
 	}
 	
-	public String handleFinancialReportingDetails() {
+	private String handleFinancialReportingDetails() {
 		transaction.generateRevenueNumbers();
 		String revenueString = "\nYEARLY REVENUE FIGURES\n=================================\n" ;
 		Map <String, Integer> yearlyRevenue = transaction.getYearlyIncome();
@@ -165,10 +165,18 @@ public class GarageController {
 		}
 	}
 
-	// @VisibleForTesting  -- Wanted  to use this annotation, but not sure if its available on the lab machines
-		//Testing support
-		public void setOccupied(final int occupied) {
-			this.currentOccupancy = occupied;
-		}
+	//Testing support
+	public void setOccupied(final int occupied) {
+		this.currentOccupancy = occupied;
+	}
+		
+	public void intejectTransactionForTest(final Transaction transaction) {
+		this.transaction = transaction;
+		currentOccupancy = transaction.getNumberOfVehicles();
+	}
+	
+	public void injectPaymentDueForTest(final float amt) {
+		this.amt = amt;
+	}
 		
 }

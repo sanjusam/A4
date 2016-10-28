@@ -24,6 +24,7 @@ public class ParkingIntergrationTest {
 	
 	@After
 	public void tearDownGarage() { 
+		GarageUtils.writeToFileInResourceFolder("ParkingDetails.txt", "");
 		garage.setOccupied(0);
 	}
 	

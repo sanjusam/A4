@@ -5,7 +5,7 @@ import java.util.Calendar;
 import com.cs414.parking.utils.ReceiptNumberGenerator;
 
 public class Receipt {
-	ReceiptNumberGenerator receiptNumGenerator = new ReceiptNumberGenerator();
+	private ReceiptNumberGenerator receiptNumGenerator = new ReceiptNumberGenerator();
 
 	private Calendar entryTime;
 	private int receiptNum;

@@ -12,7 +12,7 @@ import com.cs414.parking.expert.PaymentGenerator;
 import com.cs414.parking.expert.Rates;
 
 
-public class GeneratePaymentTest extends PaymentGenerator {
+public class PaymentGeneratorTest {
 
 	Calendar parkedTimeToBePassed = Calendar.getInstance();
 	final Rates rates = new Rates();

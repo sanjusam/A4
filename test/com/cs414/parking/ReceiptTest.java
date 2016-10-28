@@ -2,7 +2,6 @@ package com.cs414.parking;
 
 import java.util.Calendar;
 
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,4 +43,25 @@ public class ReceiptTest {
 		Assert.assertTrue(timeAfterReceiptCreation.getTimeInMillis() > receipt.getEntryTime().getTimeInMillis());
 		Assert.assertTrue(testBeginTime.getTimeInMillis() < receipt.getEntryTime().getTimeInMillis());
 	}
+	
+	@Test
+	public void testParamerterizedConstructor() throws Exception {
+		final Receipt receiptParmerters = new Receipt(88, "ASAS8989", Calendar.getInstance());
+		Assert.assertNotNull(receiptParmerters);
+		Assert.assertEquals(88, receiptParmerters.getReceiptNum());
+		Assert.assertEquals("ASAS8989", receiptParmerters.getVechicleNum());
+		Assert.assertNotNull(receiptParmerters.getEntryTime());
 	}
+	
+	@Test
+	public void testPrettyPrint() throws Exception {
+		Assert.assertTrue(receipt.prettyPrint().contains("Receipt Num"));
+		Assert.assertTrue(receipt.prettyPrint().contains("Vehicle Number"));
+		Assert.assertTrue(receipt.prettyPrint().contains("Entry Time"));
+	}
+	
+	@Test
+	public void testToStrinPrint() throws Exception {
+		Assert.assertNotNull(receipt.toString());
+	}
+}
