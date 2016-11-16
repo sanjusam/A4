@@ -17,14 +17,16 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import com.cs414.parking.controller.GarageController;
+import com.cs414.parking.garageSizeHandler.GarageSizeObserver;
 import com.cs414.parking.utils.GarageConstants;
 
-public class HandleVehicleEntry implements ActionListener {
+public class HandleVehicleEntry implements ActionListener, GarageSizeObserver {
 
-	JLabel currentlyOccupied;
+	private JLabel currentlyOccupied;
 	JLabel enterCarNum;
-	JTextField carNumReceiver; 
-	final GarageController garage = new GarageController();
+	private JTextField carNumReceiver; 
+	private final GarageController garage = new GarageController();
+	private int runtimeCapacity;
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -44,7 +46,7 @@ public class HandleVehicleEntry implements ActionListener {
 		}
 		
 		carNumReceiver.setText("");
-		currentlyOccupied.setText("Current Occupancy " + garage.getCurrentOccupancy() + "/" + garage.getCapacity());
+		currentlyOccupied.setText("Current Occupancy " + runtimeCapacity + "/" + garage.getCapacity());
 		
 	}
 
@@ -70,7 +72,8 @@ public class HandleVehicleEntry implements ActionListener {
         frame.setVisible(true);
     }
 	
-	public Component createComponents() {
+	private Component createComponents() {
+		garage.getGarageSizeTracker().registerObserver(this);
 		JButton enterButton = new JButton("Print Receipt");
 		currentlyOccupied = new JLabel("Occupancy " + garage.getCurrentOccupancy() + "/" + garage.getCapacity(), SwingConstants.CENTER);
 		enterCarNum = new JLabel("Enter Vehicle Number : ", SwingConstants.LEFT);
@@ -99,6 +102,12 @@ public class HandleVehicleEntry implements ActionListener {
                 200) //right
                 );
 	    return pane;
+	}
+
+	@Override
+	public void updateGarageSize(int runtimeCapacity) {
+		this.runtimeCapacity = runtimeCapacity;
+		currentlyOccupied.setText("Current Occupancy " + runtimeCapacity + "/" + garage.getCapacity());
 	}
 
 }

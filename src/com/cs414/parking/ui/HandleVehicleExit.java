@@ -22,12 +22,12 @@ import com.cs414.parking.utils.GarageConstants;
 
 public class HandleVehicleExit implements ActionListener {
 
-	JLabel enterReceiptNum;
-	JTextField receiptNumReceiver;
-	JButton enterButton;
-	JButton missingLostReceipt;
+	private JLabel enterReceiptNum;
+	private JTextField receiptNumReceiver;
+	private JButton enterButton;
+	private JButton missingLostReceipt;
 	
-	final GarageController garage = new GarageController();
+	final private GarageController garage = new GarageController();
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -109,7 +109,7 @@ public class HandleVehicleExit implements ActionListener {
         frame.setVisible(true);
     }
 
-	public Component createComponents() {
+	private Component createComponents() {
 		enterButton = new JButton("Get Amount");
 		missingLostReceipt = new JButton("Lost Receipt");
 		

@@ -20,9 +20,9 @@ import com.cs414.parking.controller.GarageController;
 
 public class HandleGarageSize implements ActionListener {
 
-	JLabel enterSize;
-	JTextField sizeReceiver; 
-	final GarageController garage = new GarageController();
+	private JLabel enterSize;
+	private JTextField sizeReceiver; 
+	private final GarageController garage = new GarageController();
 	
 	
 	@Override
@@ -54,42 +54,42 @@ public class HandleGarageSize implements ActionListener {
         });
     }
 	
-private static void createAndShowGUI() {
-	JFrame.setDefaultLookAndFeelDecorated(true);
-    JFrame frame = new JFrame("Welcome to the Parking Garage  -- Size updater");
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    HandleGarageSize app = new HandleGarageSize();
-    Component contents = app.createComponents();
-    frame.getContentPane().add(contents, BorderLayout.CENTER);
-    frame.pack();
-    frame.setVisible(true);        
+	private static void createAndShowGUI() {
+		JFrame.setDefaultLookAndFeelDecorated(true);
+	    JFrame frame = new JFrame("Welcome to the Parking Garage  -- Size updater");
+	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    HandleGarageSize app = new HandleGarageSize();
+	    Component contents = app.createComponents();
+	    frame.getContentPane().add(contents, BorderLayout.CENTER);
+	    frame.pack();
+	    frame.setVisible(true);        
 	}
 
-public Component createComponents() {
-	JButton updateSize = new JButton("Update Size");
-	enterSize = new JLabel("Enter New Size: ", SwingConstants.LEFT);
-	Font enterCarNumFont = enterSize.getFont();
-	Font boldFont = new Font(enterCarNumFont.getFontName(), Font.BOLD, 15);
-	
-	enterSize.setFont(boldFont);
-	updateSize.setFont(boldFont);
+	private Component createComponents() {
+		JButton updateSize = new JButton("Update Size");
+		enterSize = new JLabel("Enter New Size: ", SwingConstants.LEFT);
+		Font enterCarNumFont = enterSize.getFont();
+		Font boldFont = new Font(enterCarNumFont.getFontName(), Font.BOLD, 15);
 		
-	updateSize.addActionListener(this);
+		enterSize.setFont(boldFont);
+		updateSize.setFont(boldFont);
 			
-	sizeReceiver = new JTextField(20);
-	
-	JPanel pane = new JPanel(new GridLayout(0, 1));
-	pane.add(enterSize);
-    pane.add(sizeReceiver);
-    pane.add(updateSize);
-    
-    
-    pane.setBorder(BorderFactory.createEmptyBorder(
-    		30, //top
-            30, //left
-            100, //bottom
-            200) //right
-            );
-    return pane;
-}
+		updateSize.addActionListener(this);
+				
+		sizeReceiver = new JTextField(20);
+		
+		JPanel pane = new JPanel(new GridLayout(0, 1));
+		pane.add(enterSize);
+	    pane.add(sizeReceiver);
+	    pane.add(updateSize);
+	    
+	    
+	    pane.setBorder(BorderFactory.createEmptyBorder(
+	    		30, //top
+	            30, //left
+	            100, //bottom
+	            200) //right
+	            );
+	    return pane;
+	}
 }

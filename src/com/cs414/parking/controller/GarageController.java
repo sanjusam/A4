@@ -4,16 +4,19 @@ import java.io.File;
 import java.util.Map;
 
 import com.cs414.parking.expert.Transaction;
+import com.cs414.parking.garageSizeHandler.GarageSizeTracker;
+import com.cs414.parking.garageSizeHandler.GarageSizeObserver;
 import com.cs414.parking.utils.CardValidator;
 import com.cs414.parking.utils.GarageConstants;
 import com.cs414.parking.utils.GarageUtils;
 
-public class GarageController {
+public class GarageController implements GarageSizeObserver {
 	private final String capacityFile= "GarageCapacity.txt";
 	private int CAPACITY = readCapacityFromConfiguration();
 	private int currentOccupancy;
 	private Transaction transaction;
 	private float amt = GarageConstants.AMOUNT_NOT_CALCULATED;
+	GarageSizeTracker garageSizeTracker = new GarageSizeTracker();
 
 	public int getCapacity() {
 		return CAPACITY;
@@ -21,7 +24,8 @@ public class GarageController {
 	
 	public GarageController() {
 		transaction = new Transaction();
-		currentOccupancy = transaction.getNumberOfVehicles();
+		garageSizeTracker.registerObserver(this);
+		garageSizeTracker.setInitialOccupancy(transaction.getNumberOfVehicles());
 	}
 
 	public int getCurrentOccupancy() {
@@ -31,7 +35,7 @@ public class GarageController {
 	public String handleEntry(final String vechicleNum) {
 
 		if(isAvailable()) {
-			currentOccupancy ++;
+			garageSizeTracker.incrementGarageOccupancy();
 			return GarageConstants.MSG_PARKING_SLIP_HEADER + transaction.createTransaction(vechicleNum);
 		} else {
 			return GarageConstants.MSG_PARKING_SLIP_HEADER + GarageConstants.MSG_PARKING_NOT_AVAILABLE;
@@ -54,7 +58,7 @@ public class GarageController {
 	public String makePayment(float amout) {
 		if ((amt != GarageConstants.AMOUNT_NOT_CALCULATED) && (amout == amt))  {
 			if(currentOccupancy > 0) { 
-				currentOccupancy --;
+				garageSizeTracker.decrementGarageOccupancy();
 				transaction.updateTransactionRecords();
 			}
 			amt = GarageConstants.AMOUNT_NOT_CALCULATED;
@@ -164,6 +168,16 @@ public class GarageController {
 			return defaultParkingSize;
 		}
 	}
+	
+	@Override
+	public void updateGarageSize(final int currentOccupancy) {
+		this.currentOccupancy = currentOccupancy;
+	}
+
+	public GarageSizeTracker getGarageSizeTracker() {
+		return garageSizeTracker;
+	}
+	
 
 	//Testing support
 	public void setOccupied(final int occupied) {
@@ -177,6 +191,5 @@ public class GarageController {
 	
 	public void injectPaymentDueForTest(final float amt) {
 		this.amt = amt;
-	}
-		
+	}		
 }
