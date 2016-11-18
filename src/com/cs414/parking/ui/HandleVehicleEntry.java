@@ -6,6 +6,10 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -18,15 +22,28 @@ import javax.swing.SwingConstants;
 
 import com.cs414.parking.controller.GarageController;
 import com.cs414.parking.garageSizeHandler.GarageSizeObserver;
+import com.cs414.parking.garageSizeHandler.Observable;
 import com.cs414.parking.utils.GarageConstants;
 
-public class HandleVehicleEntry implements ActionListener, GarageSizeObserver {
+public class HandleVehicleEntry 
+					extends java.rmi.server.UnicastRemoteObject 
+					implements ActionListener, GarageSizeObserver {
 
+	protected HandleVehicleEntry() throws RemoteException {
+		super();
+	}
+
+	private static final long serialVersionUID = 1L;
+	
 	private JLabel currentlyOccupied;
 	JLabel enterCarNum;
 	private JTextField carNumReceiver; 
-	private final GarageController garage = new GarageController();
-	private int runtimeCapacity;
+	private GarageController globalGarageController  ;
+	private int runtimeOccupancy;
+	private static String prgArg1 ; 
+	private static String prgArg2 ;
+	private JFrame globalframe;
+	
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -34,48 +51,80 @@ public class HandleVehicleEntry implements ActionListener, GarageSizeObserver {
 		JFrame frame = new JFrame("Information");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		if(carNum == null || carNum.isEmpty()) {
-			JOptionPane.showMessageDialog(frame, "Vehicle Number cannot be empty");
+			JOptionPane.showMessageDialog(globalframe, "Vehicle Number cannot be empty");
 			return;
 		}
+		String receipt = "";
+		try {
+			receipt = globalGarageController.handleEntry(carNum);
+		} catch (final Exception ex) {
+			System.out.println("Unable to generated receipt num " + e );
+		}
 		
-		final String receipt = garage.handleEntry(carNum);
 		if(!receipt.contains(GarageConstants.MSG_PARKING_NOT_AVAILABLE)) {
-			JOptionPane.showMessageDialog(frame, receipt  + "\n\n GARARGE DOOR OPENED \n");
+			JOptionPane.showMessageDialog(globalframe, receipt  + "\n\n GARARGE DOOR OPENED \n");
 		} else {
-			JOptionPane.showMessageDialog(frame, receipt);
+			JOptionPane.showMessageDialog(globalframe, receipt);
 		}
 		
 		carNumReceiver.setText("");
-		currentlyOccupied.setText("Current Occupancy " + runtimeCapacity + "/" + garage.getCapacity());
-		
+		int capacity = -1;
+		try {
+			capacity = globalGarageController.getCapacity();
+			runtimeOccupancy = globalGarageController.getCurrentOccupancy();
+		} catch (final Exception exception) {
+			System.out.println("Unable to reterive capacity " + exception);
+		}
+		currentlyOccupied.setText("Current Occupancy " + runtimeOccupancy + "/" + capacity);
+		globalframe.revalidate();
 	}
 
 	public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+		prgArg1 = args[0];
+		prgArg2 = args[1];
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGUI();
+            	try {
+            		createAndShowGUI();
+            	} catch(final Exception e) {
+            		System.out.println("Unabled to run the application" + e);
+            		System.exit(-1);
+            	}
             }
         });
     }
 
+	private void intializeGarage() {
+		try {
+			globalGarageController = (GarageController) Naming.lookup("rmi://" + prgArg1 + ":" + prgArg2 + "/GarageService");
+		} catch (MalformedURLException | RemoteException | NotBoundException exceptions) {
+			exceptions.printStackTrace();
+			System.exit(-1);
+		}
+	}
 	
-	private static void createAndShowGUI() {
+	private static void createAndShowGUI() throws Exception {
         JFrame.setDefaultLookAndFeelDecorated(true);
         JFrame frame = new JFrame("Welcome to the Parking Garage");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         HandleVehicleEntry app = new HandleVehicleEntry();
-        Component contents = app.createComponents();
+        Component contents = app.createComponents(frame);
         frame.getContentPane().add(contents, BorderLayout.CENTER);
         //Display the window.
         frame.pack();
         frame.setVisible(true);
     }
 	
-	private Component createComponents() {
-		garage.getGarageSizeTracker().registerObserver(this);
+	private Component createComponents(JFrame frame) throws Exception {
+		this.globalframe = frame;
+		intializeGarage();
+		final GarageSizeObserver garageSizeTracker = new MonitorSizeChange();
+		Observable g = (Observable)(globalGarageController.getGarageSizeTracker());
+		g.registerObserver(this);
+		g.registerObserver(garageSizeTracker);
 		JButton enterButton = new JButton("Print Receipt");
-		currentlyOccupied = new JLabel("Occupancy " + garage.getCurrentOccupancy() + "/" + garage.getCapacity(), SwingConstants.CENTER);
+		currentlyOccupied = new JLabel("Occupancy " + globalGarageController.getCurrentOccupancy() + "/" + globalGarageController.getCapacity(), SwingConstants.CENTER);
 		enterCarNum = new JLabel("Enter Vehicle Number : ", SwingConstants.LEFT);
 		Font enterCarNumFont = enterCarNum.getFont();
 		Font boldFont = new Font(enterCarNumFont.getFontName(), Font.BOLD, 15);
@@ -106,8 +155,14 @@ public class HandleVehicleEntry implements ActionListener, GarageSizeObserver {
 
 	@Override
 	public void updateGarageSize(int runtimeCapacity) {
-		this.runtimeCapacity = runtimeCapacity;
-		currentlyOccupied.setText("Current Occupancy " + runtimeCapacity + "/" + garage.getCapacity());
+		this.runtimeOccupancy = runtimeCapacity;
+		int capacity = -1;
+		try {
+			capacity = globalGarageController.getCapacity();
+		} catch (final Exception exception) {
+			System.out.println("Unable to reterive capacity " + exception);
+		}
+		currentlyOccupied.setText("Current Occupancy " + runtimeCapacity + "/" + capacity);
+		globalframe.revalidate();
 	}
-
 }

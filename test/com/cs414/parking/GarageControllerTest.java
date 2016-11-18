@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.cs414.parking.controller.GarageController;
+import com.cs414.parking.controller.GarageControllerImpl;
 import com.cs414.parking.expert.Transaction;
 import com.cs414.parking.utils.GarageConstants;
 import com.cs414.parking.utils.GarageUtils;
@@ -14,7 +14,7 @@ import com.cs414.parking.utils.GarageUtils;
 
 public class GarageControllerTest {
 	
-	private GarageController parkingGarage;
+	private GarageControllerImpl parkingGarage;
 	private final String vehicleNum = "112-RYA";
 	private final String capacityConfigurationFile = "GarageCapacity.txt";
 	private int originalCapacity;
@@ -26,7 +26,7 @@ public class GarageControllerTest {
 
 	@Before
 	public void setup() throws Exception {
-		parkingGarage = new GarageController();
+		parkingGarage = new GarageControllerImpl();
 		capacity = parkingGarage.getCapacity();
 		originalCapacity = parkingGarage.readCapacityFromConfiguration();
 		transactionMock = new Transaction();

@@ -6,6 +6,10 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -26,8 +30,11 @@ public class HandleVehicleExit implements ActionListener {
 	private JTextField receiptNumReceiver;
 	private JButton enterButton;
 	private JButton missingLostReceipt;
+	private static String prgArg1 ; 
+	private static String prgArg2 ;
 	
-	final private GarageController garage = new GarageController();
+	
+	private GarageController globalGarageController;
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -36,14 +43,22 @@ public class HandleVehicleExit implements ActionListener {
 		JFrame frame = new JFrame("Information");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		if(e.getSource().equals(missingLostReceipt)) {
-			respFromSystem = garage.handleMissingTicket();
+			try {
+				respFromSystem = globalGarageController.handleMissingTicket();
+			} catch (RemoteException exception) {
+				exception.printStackTrace();
+			}
 		} else if (e.getSource().equals(enterButton)) {
 			final String receiptNum = receiptNumReceiver.getText();
 			if(receiptNum == null || receiptNum.isEmpty()) {
 				JOptionPane.showMessageDialog(frame, "Receipt Number cannot be empty");
 				return;
 			}
-			respFromSystem = garage.handleExit(receiptNum);
+			try {
+				respFromSystem = globalGarageController.handleExit(receiptNum);
+			} catch (RemoteException exception) {
+				exception.printStackTrace();
+			}
 		}
 		receiptNumReceiver.setText("");
 		if(respFromSystem.equals(GarageConstants.INVALID_RECEIPT_NUM)) {
@@ -77,7 +92,11 @@ public class HandleVehicleExit implements ActionListener {
 					JOptionPane.showMessageDialog(frame, "Bad Payment Details - Try Again!!");
 					continue;
 				}
-				paymentDetails = garage.makePayment(Float.parseFloat(respFromSystem));
+				try {
+					paymentDetails = globalGarageController.makePayment(Float.parseFloat(respFromSystem));
+				} catch (NumberFormatException | RemoteException exceptions) {
+					exceptions.printStackTrace();
+				}
 				break;
 			}
 		}
@@ -89,7 +108,9 @@ public class HandleVehicleExit implements ActionListener {
 	}
 
 	public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+		prgArg1 = args[0];
+		prgArg2 = args[1];
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
             }
@@ -110,6 +131,7 @@ public class HandleVehicleExit implements ActionListener {
     }
 
 	private Component createComponents() {
+		intializeGarage();
 		enterButton = new JButton("Get Amount");
 		missingLostReceipt = new JButton("Lost Receipt");
 		
@@ -141,4 +163,14 @@ public class HandleVehicleExit implements ActionListener {
 	            );
 	    return pane;
 	}
+	
+	private void intializeGarage() {
+		try {
+			globalGarageController = (GarageController) Naming.lookup("rmi://" + prgArg1 + ":" + prgArg2 + "/GarageService");
+		} catch (MalformedURLException | RemoteException | NotBoundException exceptions) {
+			exceptions.printStackTrace();
+			System.exit(-1);
+		}
+	}
+	
 }

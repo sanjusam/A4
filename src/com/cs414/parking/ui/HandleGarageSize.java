@@ -4,8 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -22,8 +27,9 @@ public class HandleGarageSize implements ActionListener {
 
 	private JLabel enterSize;
 	private JTextField sizeReceiver; 
-	private final GarageController garage = new GarageController();
-	
+	private GarageController globalGarageController ;
+	private static String prgArg1;
+	private static String prgArg2;
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -42,12 +48,19 @@ public class HandleGarageSize implements ActionListener {
 				return;
 			}
 		}
-		JOptionPane.showMessageDialog(frame, garage.updateParkingGarageSize(newIntSize));
-
+		try {
+			JOptionPane.showMessageDialog(frame, globalGarageController.updateParkingGarageSize(newIntSize));
+		} catch (HeadlessException | RemoteException exceptions) {
+			exceptions.printStackTrace();
+			System.exit(-1);
+		}
+		sizeReceiver.setText("");
 	}
 
 	public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+		prgArg1 = args[0];
+		prgArg2 = args[1];
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
             }
@@ -66,6 +79,7 @@ public class HandleGarageSize implements ActionListener {
 	}
 
 	private Component createComponents() {
+		intializeGarage();
 		JButton updateSize = new JButton("Update Size");
 		enterSize = new JLabel("Enter New Size: ", SwingConstants.LEFT);
 		Font enterCarNumFont = enterSize.getFont();
@@ -91,5 +105,14 @@ public class HandleGarageSize implements ActionListener {
 	            200) //right
 	            );
 	    return pane;
+	}
+	
+	private void intializeGarage() {
+		try {
+			globalGarageController = (GarageController) Naming.lookup("rmi://" + prgArg1 + ":" + prgArg2 + "/GarageService");
+		} catch (MalformedURLException | RemoteException | NotBoundException exceptions) {
+			exceptions.printStackTrace();
+			System.exit(-1);
+		}
 	}
 }

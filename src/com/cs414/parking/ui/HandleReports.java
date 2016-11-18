@@ -4,35 +4,45 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 import com.cs414.parking.controller.GarageController;
 
 public class HandleReports implements ActionListener {
 
 	JButton generateReports;
-		
-	final GarageController garage = new GarageController();
+	private GarageController garage ;
+	private static String prgArg1;
+	private static String prgArg2;
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JFrame frame = new JFrame("Information");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		JOptionPane.showMessageDialog(frame, garage.handleFinancialReporting());
+		try {
+			JOptionPane.showMessageDialog(frame, garage.handleFinancialReporting());
+		} catch (HeadlessException | RemoteException exception) {
+			exception.printStackTrace();
+		}
 		
 	}
 	
 	public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+		prgArg1 = args[0];
+		prgArg2 = args[1];
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
             }
@@ -52,6 +62,7 @@ public class HandleReports implements ActionListener {
     }
 	
 	public Component createComponents() {
+		intializeGarage();
 		generateReports = new JButton("Generate Reports");
 		Font enterCarNumFont = generateReports.getFont();
 		Font boldFont = new Font(enterCarNumFont.getFontName(), Font.BOLD, 15);
@@ -71,4 +82,12 @@ public class HandleReports implements ActionListener {
 	    return pane;
 	}
 
+	private void intializeGarage() {
+		try {
+			garage  = (GarageController) Naming.lookup("rmi://" + prgArg1 + ":" + prgArg2 + "/GarageService");
+		} catch (MalformedURLException | RemoteException | NotBoundException exceptions) {
+			exceptions.printStackTrace();
+			System.exit(-1);
+		}
+	}
 }

@@ -1,7 +1,9 @@
 package com.cs414.parking.garageSizeHandler;
 
-public interface Observable {
-	void registerObserver(final GarageSizeObserver observer);
-    void removeObserver(final GarageSizeObserver observer);
-    void notifyObservers();
+import java.io.Serializable;
+
+public interface Observable extends java.rmi.Remote, Serializable {
+	void registerObserver(final GarageSizeObserver observer) throws java.rmi.RemoteException;
+    void removeObserver(final GarageSizeObserver observer) throws java.rmi.RemoteException;
+    void notifyObservers() throws java.rmi.RemoteException;
 }
