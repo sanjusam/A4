@@ -4,10 +4,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.cs414.parking.controller.GarageControllerImpl;
-import com.cs414.parking.expert.Rates;
-import com.cs414.parking.utils.GarageConstants;
-import com.cs414.parking.utils.GarageUtils;
+import cs414.a5.sanjusam.controller.GarageControllerImpl;
+import cs414.a5.sanjusam.expert.Rates;
+import cs414.a5.sanjusam.utils.GarageConstants;
+import cs414.a5.sanjusam.utils.GarageUtils;
 
 
 public class ExitParkingIntergrationTest {
